@@ -5,7 +5,13 @@ from nltk.corpus import stopwords
 
 nltk.download('stopwords')
 STOPWORDS = set(stopwords.words('russian'))
-nlp = spacy.load('ru_core_news_sm')
+try:
+    nlp = spacy.load('ru_core_news_sm')
+except OSError:
+    from spacy.cli import download
+    download('ru_core_news_sm')
+    nlp = spacy.load('ru_core_news_sm')
+
 
 def clean_text(text):
     text = re.sub(r"http\S+", "", text)
