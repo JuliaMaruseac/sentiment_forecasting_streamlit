@@ -3,10 +3,10 @@ import tweepy
 import os
 
 # Загрузим ключи API из переменных окружения
-API_KEY = os.getenv('QS2VdB8ptH3acU43I2UsAkVsB')
-API_SECRET = os.getenv('PFhXL1S1gL3RonFjqUthzbm5ZCbdjB4TVIttdAwEMHowHEOgvD')
-ACCESS_TOKEN = os.getenv('1275803974474629120-MmibVe5tBorU01urr5sU6GlhuSeWX4')
-ACCESS_TOKEN_SECRET = os.getenv('EAh2TFtuRiWRP99GMLIv94u2RtgVj2oTOnBHpYT6pIUbu')
+API_KEY = 'QS2VdB8ptH3acU43I2UsAkVsB'
+API_SECRET = 'PFhXL1S1gL3RonFjqUthzbm5ZCbdjB4TVIttdAwEMHowHEOgvD'
+ACCESS_TOKEN = '1275803974474629120-MmibVe5tBorU01urr5sU6GlhuSeWX4'
+ACCESS_TOKEN_SECRET ='EAh2TFtuRiWRP99GMLIv94u2RtgVj2oTOnBHpYT6pIUbu'
 
 # Настроим аутентификацию
 auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
