@@ -3,7 +3,10 @@ import nltk
 import spacy
 from nltk.corpus import stopwords
 
-nltk.download('stopwords')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
 STOPWORDS = set(stopwords.words('russian'))
 try:
     nlp = spacy.load('ru_core_news_sm')
