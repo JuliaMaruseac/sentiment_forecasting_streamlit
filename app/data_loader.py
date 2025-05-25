@@ -17,16 +17,21 @@ def load_tweets(query, max_tweets=100):
         max_results=100  # максимальный лимит для 1 запроса
     )
 
-    with tqdm(total=max_tweets, desc="📥 Загрузка твитов") as pbar:
-        for page in paginator:
-            if page.data is not None:
-                for tweet in page.data:
-                    tweets.append({'date': tweet.created_at, 'text': tweet.text})
-                    pbar.update(1)
-                    if len(tweets) >= max_tweets:
-                        pbar.close()
-                        return pd.DataFrame(tweets)
-            else:
-                print("❗ Нет данных в ответе (page.data is None)")
+    # Добавляем прогресс-бар для Streamlit
+    progress_bar = st.progress(0)
+    loaded = 0
 
+    for page in paginator:
+        if page.data is not None:
+            for tweet in page.data:
+                tweets.append({'date': tweet.created_at, 'text': tweet.text})
+                loaded += 1
+                progress_bar.progress(min(loaded / max_tweets, 1.0))
+                if loaded >= max_tweets:
+                    progress_bar.empty()  # убираем прогресс-бар
+                    return pd.DataFrame(tweets)
+        else:
+            st.warning("❗ Нет данных (page.data is None)")
+
+    progress_bar.empty()
     return pd.DataFrame(tweets)
