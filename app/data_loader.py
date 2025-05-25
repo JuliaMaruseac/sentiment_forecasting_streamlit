@@ -17,14 +17,16 @@ def load_tweets(query, max_tweets=100):
         max_results=100  # максимальный лимит для 1 запроса
     )
 
-    # Перебираем страницы
-    for page in paginator:
-        if page.data is not None:
-            for tweet in page.data:
-                tweets.append({'date': tweet.created_at, 'text': tweet.text})
-                if len(tweets) >= max_tweets:
-                    return pd.DataFrame(tweets)
-        else:
-            print("❗ Нет данных в ответе (page.data is None)")
+    with tqdm(total=max_tweets, desc="📥 Загрузка твитов") as pbar:
+        for page in paginator:
+            if page.data is not None:
+                for tweet in page.data:
+                    tweets.append({'date': tweet.created_at, 'text': tweet.text})
+                    pbar.update(1)
+                    if len(tweets) >= max_tweets:
+                        pbar.close()
+                        return pd.DataFrame(tweets)
+            else:
+                print("❗ Нет данных в ответе (page.data is None)")
 
     return pd.DataFrame(tweets)
