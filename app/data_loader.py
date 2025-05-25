@@ -1,6 +1,7 @@
 import pandas as pd
 import tweepy
 import os
+import streamlit as st
 
 # Получаем Bearer Token (или впиши напрямую)
 BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAKTr1wEAAAAA%2BbL5xUCHxfIeK%2BLBHVC4IZqQcm4%3DKEI3woOdwKTKK6ikEz2qd2mKKmvYj7HopPKvKc50b3mPAaR8DQ'
