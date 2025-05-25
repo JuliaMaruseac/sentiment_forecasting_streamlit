@@ -23,7 +23,12 @@ def clean_text(text):
     text = re.sub(r"\s+", " ", text)
     return text.strip().lower()
 
-def lemmatize_text(text):
-    doc = nlp(text)
-    return " ".join([token.lemma_ for token in doc if token.text not in STOPWORDS and token.is_alpha])
+def lemmatize_texts(texts):
+    # Используем nlp.pipe для быстрой пакетной обработки
+    cleaned_texts = []
+    for doc in nlp.pipe(texts, batch_size=1000):
+        lemmas = " ".join([token.lemma_ for token in doc if token.text not in STOPWORDS and token.is_alpha])
+        cleaned_texts.append(lemmas)
+    return cleaned_texts
+
 
