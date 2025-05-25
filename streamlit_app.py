@@ -17,9 +17,14 @@ with tab1:
     query = st.text_input("Введите ключевое слово или фразу", "искусственный интеллект")
     if st.button("Анализировать"):
         with st.spinner("Собираем данные..."):
-            df = data_loader.load_tweets(query, max_tweets=300)
+        df = data_loader.load_tweets(query, max_tweets=300)
         df.columns = df.columns.str.lower()
-        df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
+        # Сначала чистим текст
+        df["clean"] = df["text"].apply(preprocessing.clean_text)
+
+        # Теперь лемматизируем "пакетом"
+        df["clean"] = preprocessing.lemmatize_texts(df["clean"].tolist())
+
         sentiments = analyzer.batch_predict(df["clean"])
         sent_df = pd.DataFrame(sentiments)
         df_final = pd.concat([df, sent_df], axis=1)
@@ -42,10 +47,14 @@ with tab2:
 
         if "text" in df.columns:
             with st.spinner("🔄 Обработка текста..."):
-                df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
-                sentiments = analyzer.batch_predict(df["clean"])
-                sent_df = pd.DataFrame(sentiments)
-                df_final = pd.concat([df, sent_df], axis=1)
+                # Сначала чистим текст
+            df["clean"] = df["text"].apply(preprocessing.clean_text)
+
+                # Теперь лемматизируем "пакетом"
+            df["clean"] = preprocessing.lemmatize_texts(df["clean"].tolist())
+            sentiments = analyzer.batch_predict(df["clean"])
+            sent_df = pd.DataFrame(sentiments)
+            df_final = pd.concat([df, sent_df], axis=1)
 
             st.subheader("📊 Тональность загруженного файла")
             st.plotly_chart(visualizer.plot_sentiment_distribution(df_final), use_container_width=True)
