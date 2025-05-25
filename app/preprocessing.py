@@ -26,3 +26,4 @@ def clean_text(text):
 def lemmatize_text(text):
     doc = nlp(text)
     return " ".join([token.lemma_ for token in doc if token.text not in STOPWORDS and token.is_alpha])
+
