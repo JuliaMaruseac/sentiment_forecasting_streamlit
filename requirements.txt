@@ -19,3 +19,4 @@ pymongo
 xhtml2pdf
 jinja2
 tweepy
+tqdm
