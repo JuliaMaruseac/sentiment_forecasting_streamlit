@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -35,11 +34,11 @@ with tab1:
 
         st.download_button("📥 Скачать результат в CSV", df_final.to_csv(index=False), file_name="results.csv")
 
-   with tab2:
+with tab2:
     uploaded_file = st.file_uploader("Загрузите CSV-файл с колонкой 'text'", type=["csv"])
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        df.columns = df.columns.str.lower()  # приведение к нижнему регистру
+        df.columns = df.columns.str.lower()
 
         if "text" in df.columns:
             with st.spinner("🔄 Обработка текста..."):
@@ -53,4 +52,3 @@ with tab1:
             st.download_button("📥 Скачать результат в CSV", df_final.to_csv(index=False), file_name="results.csv")
         else:
             st.error("❌ Колонка 'text' не найдена! Проверьте загруженный CSV-файл.")
-
