@@ -18,7 +18,7 @@ with tab1:
     query = st.text_input("Введите ключевое слово или фразу", "искусственный интеллект")
     if st.button("Анализировать"):
         with st.spinner("Собираем данные..."):
-            df = data_loader.load_tweets(query, max_tweets=300)
+            df = data_loader.load_tweets(query, max_tweets=10)
             st.write("✅ Загруженные твиты:", df.head())
 
             df.columns = df.columns.str.lower()
