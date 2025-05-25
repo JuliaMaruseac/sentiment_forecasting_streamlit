@@ -35,15 +35,22 @@ with tab1:
 
         st.download_button("📥 Скачать результат в CSV", df_final.to_csv(index=False), file_name="results.csv")
 
-with tab2:
+   with tab2:
     uploaded_file = st.file_uploader("Загрузите CSV-файл с колонкой 'text'", type=["csv"])
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        df.columns = df.columns.str.lower()
-        df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
-        sentiments = analyzer.batch_predict(df["clean"])
-        sent_df = pd.DataFrame(sentiments)
-        df_final = pd.concat([df, sent_df], axis=1)
+        df.columns = df.columns.str.lower()  # приведение к нижнему регистру
+        
+        if "text" in df.columns:
+            with st.spinner("🔄 Обработка текста..."):
+                df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
+                sentiments = analyzer.batch_predict(df["clean"])
+                sent_df = pd.DataFrame(sentiments)
+                df_final = pd.concat([df, sent_df], axis=1)
 
-        st.subheader("📊 Тональность загруженного файла")
-        st.plotly_chart(visualizer.plot_sentiment_distribution(df_final), use_container_width=True)
+            st.subheader("📊 Тональность загруженного файла")
+            st.plotly_chart(visualizer.plot_sentiment_distribution(df_final), use_container_width=True)
+            st.download_button("📥 Скачать результат в CSV", df_final.to_csv(index=False), file_name="results.csv")
+        else:
+            st.error("❌ Колонка 'text' не найдена! Проверьте загруженный CSV-файл.")
+
