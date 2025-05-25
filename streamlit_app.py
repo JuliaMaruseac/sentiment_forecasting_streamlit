@@ -19,6 +19,7 @@ with tab1:
     if st.button("Анализировать"):
         with st.spinner("Собираем данные..."):
             df = data_loader.load_tweets(query, max_tweets=300)
+        df.columns = df.columns.str.lower()
         df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
         sentiments = analyzer.batch_predict(df["clean"])
         sent_df = pd.DataFrame(sentiments)
@@ -38,6 +39,7 @@ with tab2:
     uploaded_file = st.file_uploader("Загрузите CSV-файл с колонкой 'text'", type=["csv"])
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
+        df.columns = df.columns.str.lower()
         df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
         sentiments = analyzer.batch_predict(df["clean"])
         sent_df = pd.DataFrame(sentiments)
