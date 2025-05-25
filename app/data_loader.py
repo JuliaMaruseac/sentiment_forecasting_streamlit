@@ -2,18 +2,29 @@ import pandas as pd
 import tweepy
 import os
 
-# Загрузим ключи API из переменных окружения
-API_KEY = 'QS2VdB8ptH3acU43I2UsAkVsB'
-API_SECRET = 'PFhXL1S1gL3RonFjqUthzbm5ZCbdjB4TVIttdAwEMHowHEOgvD'
-ACCESS_TOKEN = '1275803974474629120-MmibVe5tBorU01urr5sU6GlhuSeWX4'
-ACCESS_TOKEN_SECRET ='EAh2TFtuRiWRP99GMLIv94u2RtgVj2oTOnBHpYT6pIUbu'
+# Получаем Bearer Token (или впиши напрямую)
+BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAKTr1wEAAAAA%2BbL5xUCHxfIeK%2BLBHVC4IZqQcm4%3DKEI3woOdwKTKK6ikEz2qd2mKKmvYj7HopPKvKc50b3mPAaR8DQ'
 
-# Настроим аутентификацию
-auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth, wait_on_rate_limit=True)
+# Создаём клиент Tweepy v2
+client = tweepy.Client(bearer_token=BEARER_TOKEN, wait_on_rate_limit=True)
 
 def load_tweets(query, max_tweets=100):
     tweets = []
-    for tweet in tweepy.Cursor(api.search_tweets, q=query, lang='ru', tweet_mode='extended').items(max_tweets):
-        tweets.append({'date': tweet.created_at, 'text': tweet.full_text})
+    paginator = tweepy.Paginator(
+        client.search_recent_tweets,
+        query=query,
+        tweet_fields=['created_at', 'text', 'lang'],
+        max_results=100  # максимальный лимит для 1 запроса
+    )
+
+    # Перебираем страницы
+    for page in paginator:
+        if page.data is not None:
+            for tweet in page.data:
+                tweets.append({'date': tweet.created_at, 'text': tweet.text})
+                if len(tweets) >= max_tweets:
+                    return pd.DataFrame(tweets)
+        else:
+            print("❗ Нет данных в ответе (page.data is None)")
+
     return pd.DataFrame(tweets)
