@@ -40,7 +40,7 @@ with tab1:
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
         df.columns = df.columns.str.lower()  # приведение к нижнему регистру
-        
+
         if "text" in df.columns:
             with st.spinner("🔄 Обработка текста..."):
                 df["clean"] = df["text"].apply(preprocessing.clean_text).apply(preprocessing.lemmatize_text)
